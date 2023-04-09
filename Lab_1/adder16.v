@@ -21,10 +21,10 @@
 
 
 module adder16(operand1,operand2,cin,result,cout);
-    input [15:0] operand1;//ÊäÈëÒ»
-    input [15:0] operand2;//ÊäÈë¶ş
-    input cin;//ÊäÈë½øÎ»
-    output [15:0] result;//½á¹û
-    output cout; //Êä³ö½øÎ»
+    input [15:0] operand1;//è¾“å…¥ä¸€
+    input [15:0] operand2;//è¾“å…¥äºŒ
+    input cin;//è¾“å…¥è¿›ä½
+    output [15:0] result;//ç»“æœ
+    output cout; //è¾“å‡ºè¿›ä½
     assign {cout,result} = operand1 + operand2 + cin;
 endmodule
