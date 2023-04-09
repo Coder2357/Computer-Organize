@@ -21,15 +21,15 @@
 
 module testbench;
 
- //ÊäÈë
+ //è¾“å…¥
  reg [31:0] operand1;
  reg [31:0] operand2;
  reg cin;
 
- //Êä³ö
+ //è¾“å‡º
  wire [31:0] result;
  wire cout;
- //µ÷ÓÃ32Î»¼Ó·¨Æ÷
+ //è°ƒç”¨32ä½åŠ æ³•å™¨
 adder32 uut (
          .operand1(operand1), 
          .operand2(operand2), 
@@ -38,13 +38,13 @@ adder32 uut (
          .cout(cout)
  );
  initial begin
- // ³õÊ¼»¯ÊäÈë
+ // åˆå§‹åŒ–è¾“å…¥
  operand1 = 0;
  operand2 = 0;
  cin = 0;
- #100;// 100nsÑÓÊ±
+ #100;// 100nså»¶æ—¶
  end
- always #10 operand1 = $random; //$random ÎªÏµÍ³ÈÎÎñ£¬²úÉúÒ»¸öËæ»úµÄ 32 Î»Êı
- always #10 operand2 = $random; //#10 ±íÊ¾µÈ´ı 10 ¸öµ¥Î»Ê±¼ä(10ns)£¬¼´Ã¿¹ı 10ns£¬¸³ÖµÒ»¸öËæ»úµÄ 32 Î»Êı
- always #10 cin = {$random} % 2; //¼ÓÁËÆ´½Ó·û£¬{$random}²úÉúÒ»¸ö·Ç¸ºÊı£¬³ı 2 È¡Óà µÃµ½ 0 »ò 1
+ always #10 operand1 = $random; //$random ä¸ºç³»ç»Ÿä»»åŠ¡ï¼Œäº§ç”Ÿä¸€ä¸ªéšæœºçš„ 32 ä½æ•°
+ always #10 operand2 = $random; //#10 è¡¨ç¤ºç­‰å¾… 10 ä¸ªå•ä½æ—¶é—´(10ns)ï¼Œå³æ¯è¿‡ 10nsï¼Œèµ‹å€¼ä¸€ä¸ªéšæœºçš„ 32 ä½æ•°
+ always #10 cin = {$random} % 2; //åŠ äº†æ‹¼æ¥ç¬¦ï¼Œ{$random}äº§ç”Ÿä¸€ä¸ªéè´Ÿæ•°ï¼Œé™¤ 2 å–ä½™ å¾—åˆ° 0 æˆ– 1
  endmodule
