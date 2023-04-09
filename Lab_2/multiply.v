@@ -1,0 +1,110 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 2023/04/03 12:10:16
+// Design Name: 
+// Module Name: multiply
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module multiply( // 乘法器
+    input clk, // 时钟
+    input mult_begin, // 乘法开始信号
+    input [31:0] mult_op1, // 乘法源操作数 1
+    input [31:0] mult_op2, // 乘法源操作数 2
+    output [63:0] product, // 乘积
+    output mult_end // 乘法结束信号
+);
+
+//乘法正在运算信号和结束信号
+reg mult_valid;
+assign mult_end = mult_valid & ~(|multiplier); //乘法结束信号：乘数全0
+always @(posedge clk)
+begin
+    if (!mult_begin || mult_end)
+    begin
+        mult_valid <= 1'b0;
+    end
+    else
+    begin
+        mult_valid <= 1'b1;
+    end
+end
+//两个源操作取绝对值，正数的绝对值为其本身，负数的绝对值为取反加 1
+wire op1_sign; //操作数 1 的符号位
+wire op2_sign; //操作数 2 的符号位
+wire [31:0] op1_absolute; //操作数 1 的绝对值
+wire [31:0] op2_absolute; //操作数 2 的绝对值
+assign op1_sign = mult_op1[31];
+assign op2_sign = mult_op2[31];
+assign op1_absolute = op1_sign ? (~mult_op1+1) : mult_op1;
+assign op2_absolute = op2_sign ? (~mult_op2+1) : mult_op2;
+//加载被乘数，运算时每次左移两位
+reg [63:0] multiplicand;
+always @ (posedge clk)
+begin
+    if (mult_valid)
+    begin // 如果正在进行乘法，则被乘数每时钟左移两位
+        multiplicand <= {multiplicand[61:0],2'b0};
+    end
+    else if (mult_begin)
+    begin // 乘法开始，加载被乘数，为乘数 1 的绝对值
+        multiplicand <= {32'd0,op1_absolute};
+    end
+end
+//加载乘数，运算时每次右移两位
+reg [31:0] multiplier;
+always @ (posedge clk)
+begin
+    if (mult_valid)
+    begin // 如果正在进行乘法，则乘数每时钟右移两位
+    multiplier <= {2'b0,multiplier[31:2]};
+    end
+    else if (mult_begin)
+    begin // 乘法开始，加载乘数，为乘数 2 的绝对值
+        multiplier <= op2_absolute;
+    end
+end
+// 部分积：
+wire [63:0] partial_product;
+
+assign partial_product = multiplier[0] ? (multiplier[1]?((multiplicand<<1)+multiplicand):multiplicand):(multiplier[1]?multiplicand<<1:64'd0);
+
+//累加器
+reg [63:0] product_temp;
+always @ (posedge clk)
+begin
+    if (mult_valid)
+    begin
+        product_temp <= product_temp + partial_product;
+    end
+    else if (mult_begin)
+    begin
+        product_temp <= 64'd0; // 乘法开始，乘积清零
+    end
+end
+//乘法结果的符号位和乘法结果
+reg product_sign;
+always @ (posedge clk) // 乘积
+begin
+    if (mult_valid)
+    begin
+        product_sign <= op1_sign ^ op2_sign;
+    end
+end
+//若乘法结果为负数，则需要对结果取反+1
+assign product = product_sign ? (~product_temp+1) : product_temp;
+endmodule
