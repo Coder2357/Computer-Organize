@@ -23,12 +23,12 @@
 `include "adder16.v"
 
 module adder32(operand1,operand2,cin,result,cout);
-input [31:0] operand1;//µÚÒ»¸ö¼ÓÊı
-input[31:0] operand2;//µÚ¶ş¸ö¼ÓÊı
-input cin;//½ÓÊÕµÄ½øÎ»
-output [31:0]result;//½á¹û
-output cout;//È«¼ÓÆ÷Êä³ö
-wire low16cout;//½ÓÊÕÇ°16Î»½øÎ»Êä³ö
-adder16 adder1(operand1[15:0],operand2[15:0],cin,result[15:0],low16cout);//µÍ16Î»¼Ó·¨
-adder16 adder2(operand1[31:16],operand2[31:16],low16cout,result[31:16],cout);//¸ß16Î»¼Ó·¨
+input [31:0] operand1;//ç¬¬ä¸€ä¸ªåŠ æ•°
+input[31:0] operand2;//ç¬¬äºŒä¸ªåŠ æ•°
+input cin;//æ¥æ”¶çš„è¿›ä½
+output [31:0]result;//ç»“æœ
+output cout;//å…¨åŠ å™¨è¾“å‡º
+wire low16cout;//æ¥æ”¶å‰16ä½è¿›ä½è¾“å‡º
+adder16 adder1(operand1[15:0],operand2[15:0],cin,result[15:0],low16cout);//ä½16ä½åŠ æ³•
+adder16 adder2(operand1[31:16],operand2[31:16],low16cout,result[31:16],cout);//é«˜16ä½åŠ æ³•
 endmodule
